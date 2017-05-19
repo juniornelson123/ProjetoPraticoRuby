@@ -1,0 +1,51 @@
+# Eclipse
+.project
+.classpath
+.settings/*
+!.settings/org.eclipse.jdt.core.prefs
+!.settings/org.eclipse.jdt.ui.prefs
+.springBeans
+.metadata
+.externalToolBuilders
+test-output
+
+#JRebel
+rebel.xml
+
+# Maven
+target
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+
+
+# Idea
+*.iml
+**/.idea/*
+
+# Node
+src/main/frontend/node
+src/main/frontend/node_modules
+node_modules
+src/main/frontend/typings
+
+src/main/frontend/dist
+src/main/frontend/tmp
+src/main/frontend/build
+src/main/frontend/.sass-cache
+src/main/frontend/connect.lock
+src/main/frontend/coverage/*
+src/main/frontend/npm-debug.log
+npm-debug.log
+src/main/frontend/testem.log
+src/main/frontend/libpeerconnection.log
+
+src/main/frontend/typings
+src/main/frontend/e2e/*.js
+src/main/frontend/e2e/*.map
+
+#Win
+.DS_Store
+Thumbs.db
