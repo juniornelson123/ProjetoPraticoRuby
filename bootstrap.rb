@@ -8,6 +8,7 @@ class Payment
   end
 
   def pay(paid_at = Time.now)
+    purchase = Purchase.new(order)
     @amount = order.total_amount
     @authorization_number = Time.now.to_i
     @invoice = Invoice.new(billing_address: order.address, shipping_address: order.address, order: order)
@@ -18,6 +19,8 @@ class Payment
   def paid?
     !paid_at.nil?
   end
+
+
 end
 
 class Invoice
@@ -52,6 +55,9 @@ class Order
     @closed_at = closed_at
   end
 
+  def generate_shipping_label
+    puts "generate shipping label to send"
+  end
   # remember: you can create new methods inside those classes to help you create a better design
 end
 
@@ -92,16 +98,108 @@ class CreditCard
 end
 
 class Customer
+  attr_reader :membership
+
+  def initialize(attributes = {})
+    @membership = Membership.new
+  end
+
   # you can customize this class by yourself
 end
 
 class Membership
+  attr_reader :status
+
+  def initialize
+    @status = false
+  end
+
+  def update(status)
+    @status = status
+    puts "membership active(true)"
+  end
   # you can customize this class by yourself
+end
+
+class Purchase
+  attr_reader :order
+
+  def initialize(order)
+    @order = order
+    verify_order
+  end
+  
+  def verify_order
+    @order.items.each do |item|
+      case item.product.type
+        when :physical
+          purchase_physical
+        when :book
+          purchase_book
+        when :digital
+          purchase_digital
+        when :membership
+          purchase_membership
+        else
+          puts "Invalid option to item"
+        end
+    end
+  end
+
+  def purchase_physical
+    @order.generate_shipping_label
+  end
+
+  def purchase_book
+    @order.generate_shipping_label
+    notification = Notification.new('Book', "Buy Book Notification")
+    notification.send_notification
+  end
+
+  def purchase_digital
+    notification = Notification.new('Digital', "Buy Digital Notification")
+    notification.send_notification
+    voucher = Voucher.new(10)
+    voucher.generate_voucher
+  end
+
+  def purchase_membership
+    @order.customer.membership.update true
+  end
+end
+
+class Voucher
+  attr_reader :value
+
+  def initialize(value)
+    @value = value
+  end
+
+  def generate_voucher
+    puts "generate discount #{value}%"
+  end
+end
+
+class Notification
+  attr_reader :title, :body
+
+  def initialize(title, body)
+    @title = title  
+    @body = body  
+  end
+
+  def send_notification 
+    puts "title notification: #{@title}"
+    puts "body notification: #{@body}"
+  end
 end
 
 # Book Example (build new payments if you need to properly test it)
 foolano = Customer.new
-book = Product.new(name: 'Awesome book', type: :book)
+# book = Product.new(name: 'Awesome book', type: :physical) #item physical
+# book = Product.new(name: 'Awesome book', type: :book) #item book
+# book = Product.new(name: 'Awesome book', type: :membership) #item membership
+book = Product.new(name: 'Awesome book', type: :digital) #item digital
 book_order = Order.new(foolano)
 book_order.add_product(book)
 
