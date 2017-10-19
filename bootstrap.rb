@@ -165,6 +165,8 @@ class Purchase
 
   def purchase_membership
     @order.customer.membership.update true
+    notification = Notification.new('Membership', "Buy Membership Notification")
+    notification.send_notification
   end
 end
 
@@ -198,8 +200,8 @@ end
 foolano = Customer.new
 # book = Product.new(name: 'Awesome book', type: :physical) #item physical
 # book = Product.new(name: 'Awesome book', type: :book) #item book
-# book = Product.new(name: 'Awesome book', type: :membership) #item membership
-book = Product.new(name: 'Awesome book', type: :digital) #item digital
+book = Product.new(name: 'Awesome book', type: :membership) #item membership
+# book = Product.new(name: 'Awesome book', type: :digital) #item digital
 book_order = Order.new(foolano)
 book_order.add_product(book)
 
